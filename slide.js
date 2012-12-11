@@ -4,7 +4,23 @@
 */
 var interv;
 function circle () {
-	interv = setInterval(slide(dir), 5000);
+	interv = setInterval(function(){
+	var $active = $('.carousel').find('.item.active')
+		, children = $active.parent().children()
+		, activePos = children.index($active)
+		, $next;
+		if(activePos < (children.length - 1) && activePos > -1) {
+			$next = children[activePos + 1];
+		}
+		else if(activePos === children.length - 1) {
+			$next = children[0];
+		}
+		$active.fadeTo('slow', 0.01, function(){
+			$active.removeClass('active');
+			$next.className = 'item active';
+			$next.style.opacity = 1;
+		});		
+	}, 5000);
 }
 
 function slide (direction) {	
@@ -13,6 +29,7 @@ var $active = $('.carousel').find('.item.active')
 	, activePos = children.index($active)
 	, $next
 	, $prev;
+	direction = direction || 'next';
 	if(direction === 'next') {
 		if(activePos < (children.length - 1) && activePos > -1) {
 			$next = children[activePos + 1];
