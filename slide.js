@@ -4,28 +4,41 @@
 */
 var interv;
 function circle () {
-	interv = setInterval(slide, 5000);
+	interv = setInterval(slide(dir), 5000);
 }
 
-function slide () {	
+function slide (direction) {	
 var $active = $('.carousel').find('.item.active')
 	, children = $active.parent().children()
 	, activePos = children.index($active)
 	, $next
 	, $prev;
-	if(activePos < (children.length - 1) && activePos > -1) {
-		$next = children[activePos + 1];
+	if(direction === 'next') {
+		if(activePos < (children.length - 1) && activePos > -1) {
+			$next = children[activePos + 1];
+		}
+		else if(activePos === children.length - 1) {
+			$next = children[0];
+		}
+		$active.fadeTo('slow', 0.01, function(){
+			$active.removeClass('active');
+			$next.className = 'item active';
+			$next.style.opacity = 1;
+		});
 	}
-	else if(activePos === children.length - 1) {
-		$next = children[0];
-	}
-	console.log(typeof $next);
-	$active.fadeTo('slow', 0, function(){
-		$active.removeClass('active');
-		$next.className = 'item active';
-		$next.style.opacity = 1;
-	});
-	
+	if(direction === 'prev') {
+		if(activePos > 0 && activePos <= (children.length - 1)){
+			$prev = children[activePos - 1];
+		}
+		else if(activePos === 0) {
+			$prev = children[children.length - 1];
+		}
+		$active.fadeTo('slow', 0.01, function(){
+			$active.removeClass('active');
+			$prev.className = 'item active';
+			$prev.style.opacity = 1;
+		});
+	}	
 	return this;
 	}
 
@@ -34,4 +47,12 @@ $('.carousel').mouseover(function () {
 });
 $('.carousel').mouseleave(function () {
 	circle();
+});
+$('.carousel-control.left').click(function(e){
+	slide('prev');
+	e.preventDefault();
+});
+$('.carousel-control.right').click(function(e){
+	slide('next');
+	e.preventDefault();
 });
